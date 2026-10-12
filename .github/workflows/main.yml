@@ -18,12 +18,12 @@ jobs:
         run: docker build -t demo-app:latest .
 
       - name: Trivy Image Scan
-        run: aquasecurity/trivy-action@4.28.0
+        uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: demo-app:latest
           scan-type: image
           format: table
-          severity: HIGH, CRITICAL
+          severity: HIGH,CRITICAL
           exit-code: '1'
           ignore-unfixed: true
 
