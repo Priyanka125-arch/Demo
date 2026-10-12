@@ -22,10 +22,26 @@ jobs:
         with:
           image-ref: demo-app:latest
           scan-type: image
-          format: table
-          severity: HIGH,CRITICAL
+          format: 'table'
+          severity: 'HIGH,CRITICAL'
           exit-code: '1'
           ignore-unfixed: true
+
+      - name: Generate SBOM
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: demo-app:latest
+          format: 'cyclonedx'
+          output: 'sbom.json'
+          exit-code: '0'
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image-sbom
+          path: sbom.json
+          if-no-files-found: error
+          retention-days: 30
 
       - name: Finish Pipeline
         run: echo "Pipeline completed successfully"
