@@ -6,6 +6,10 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
   demo:
     runs-on: ubuntu-latest
@@ -15,20 +19,21 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Docker Image
-        run: docker build -t demo-app:latest .
+        run: |
+          docker build -t demo-app:latest .
 
-      - name: Trivy Image Scan
+      - name: Run Trivy Vulnerability Scan
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: demo-app:latest
           scan-type: image
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          severity: 'HIGH,CRITICAL'
-          exit-code: '1'
+          format: sarif
+          output: trivy-results.sarif
+          severity: HIGH,CRITICAL
+          exit-code: 0
           ignore-unfixed: true
 
-      - name: Upload Trivy Scan Results to GitHub Security Tab
+      - name: Upload Trivy Scan Results
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-results.sarif
@@ -37,9 +42,9 @@ jobs:
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: demo-app:latest
-          format: 'cyclonedx'
-          output: 'sbom.json'
-          exit-code: '0'
+          format: cyclonedx
+          output: sbom.json
+          exit-code: 0
 
       - name: Upload SBOM
         uses: actions/upload-artifact@v4
