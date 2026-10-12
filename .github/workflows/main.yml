@@ -1,27 +1,24 @@
 name: Demo CI Pipeline
+
 on:
-  push: 
-    branch: [main] 
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
-  jobs:
-    demo:
-      runs-on: ubuntu-latest
-      steps:
-        - name: checkout code
-          uses: actions/checkout@4
+jobs:
+  demo:
+    runs-on: ubuntu-latest
 
-        - name: show messages
-          run: echo "Github Action Pipeline started"
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-        - name: Run demo test
-          run: echo "Test passed successfully"
+      - name: Show Messages
+        run: echo "GitHub Action Pipeline started"
 
-        - name: Finish Pipeline 
-          run: echo "Pipeline completed successfully"
+      - name: Run Demo Test
+        run: echo "Test passed successfully"
 
-          
-
-          
-          
-  
+      - name: Finish Pipeline
+        run: echo "Pipeline completed successfully"
