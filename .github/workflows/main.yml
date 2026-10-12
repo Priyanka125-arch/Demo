@@ -14,11 +14,18 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Show Messages
-        run: echo "GitHub Action Pipeline started"
+      - name: Build Docker Image
+        run: docker build -t demo-app:latest .
 
-      - name: Run Demo Test
-        run: echo "Test passed successfully"
+      - name: Trivy Image Scan
+        run: aquasecurity/trivy-action@4.28.0
+        with:
+          image-ref: demo-app:latest
+          scan-type: image
+          format: table
+          severity: HIGH, CRITICAL
+          exit-code: '1'
+          ignore-unfixed: true
 
       - name: Finish Pipeline
         run: echo "Pipeline completed successfully"
