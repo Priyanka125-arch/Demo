@@ -10,7 +10,7 @@ AWS_SECRET_ACCESS_KEY = "demoSecretKey123456789"
 GITHUB_TOKEN = "ghp_demoToken123456789"
 
 def main():
-    print("Demo application started")
+    print("Demo application started now")
 
 if __name__ == "__main__":
     main()
