@@ -20,6 +20,8 @@ jobs:
 
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.Github_TOKEN }}
 
       - name: Build Docker Image
         run: |
@@ -49,7 +51,7 @@ jobs:
           output: sbom.cdx.json
           exit-code: 0
 
-      - name: Setup Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -62,11 +64,7 @@ jobs:
         run: |
           python demosecret.py
 
-      - name: Show Files
-        run: |
-          ls -lah
-
-      - name: Upload SBOM
+      - name: Upload SBOM Excel
         uses: actions/upload-artifact@v4
         with:
           name: docker-image-sbom
