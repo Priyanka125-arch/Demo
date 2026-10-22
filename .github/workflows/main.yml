@@ -24,8 +24,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker Image
-        run: |
-          docker build -t demo-app:latest .
+        run: docker build -t demo-app:latest .
 
       - name: Run Trivy Vulnerability Scan
         uses: aquasecurity/trivy-action@v0.36.0
@@ -61,4 +60,55 @@ jobs:
           python -m pip install --upgrade pip
           pip install pandas openpyxl
 
-      - name: Convert SBOM JSON
+      - name: Create SBOM Excel Report
+        run: |
+          cat > convert_sbom.py << 'PYTHON'
+          import json
+          import pandas as pd
+
+          with open("sbom.cdx.json", "r") as f:
+              sbom = json.load(f)
+
+          components = sbom.get("components", [])
+
+          rows = []
+          for comp in components:
+              rows.append({
+                  "Name": comp.get("name", ""),
+                  "Version": comp.get("version", ""),
+                  "Type": comp.get("type", ""),
+                  "Publisher": comp.get("publisher", ""),
+                  "Group": comp.get("group", ""),
+                  "PURL": comp.get("purl", "")
+              })
+
+          if not rows:
+              rows.append({
+                  "Name": "No components found",
+                  "Version": "",
+                  "Type": "",
+                  "Publisher": "",
+                  "Group": "",
+                  "PURL": ""
+              })
+
+          df = pd.DataFrame(rows)
+          df.to_excel("sbom.xlsx", index=False)
+
+          print("SBOM Excel report created successfully.")
+          PYTHON
+
+          python convert_sbom.py
+
+      - name: Upload SBOM Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image-sbom
+          path: |
+            sbom.cdx.json
+            sbom.xlsx
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Finish Pipeline
+        run: echo "Pipeline completed successfully"
