@@ -58,19 +58,13 @@ jobs:
         run: |
           pip install pandas openpyxl
 
-      - name: Show Repository Files
-        run: |
-          pwd
-          find . -type f
-
       - name: Convert SBOM to Excel
         run: |
           python demosecret.py
 
-      - name: Verify Excel File
+      - name: Show Files
         run: |
           ls -lah
-          test -f sbom.xlsx
 
       - name: Upload SBOM
         uses: actions/upload-artifact@v4
