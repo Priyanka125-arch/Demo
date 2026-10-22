@@ -58,9 +58,14 @@ jobs:
         run: |
           pip install pandas openpyxl
 
+      - name: Show Repository Files
+        run: |
+          pwd
+          find . -type f
+
       - name: Convert SBOM to Excel
         run: |
-          python Demo/demosecret.py
+          python demosecret.py
 
       - name: Verify Excel File
         run: |
