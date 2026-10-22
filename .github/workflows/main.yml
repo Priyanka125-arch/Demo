@@ -60,7 +60,7 @@ jobs:
 
       - name: Convert SBOM to Excel
         run: |
-          python /demosecret.py
+          python Demo/demosecret.py
 
       - name: Verify Excel File
         run: |
