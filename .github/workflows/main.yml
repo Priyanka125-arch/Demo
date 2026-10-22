@@ -51,9 +51,22 @@ jobs:
           output: sbom.cdx.json
           exit-code: 0
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Dependencies
+        run: |
+          pip install pandas openpyxl
+
       - name: Convert SBOM to Excel
         run: |
-          python demosecret.py
+          python convert_sbom.py
+
+      - name: Verify Files
+        run: |
+          ls -la
 
       - name: Upload SBOM
         uses: actions/upload-artifact@v4
