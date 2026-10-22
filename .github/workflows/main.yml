@@ -20,8 +20,6 @@ jobs:
 
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.Github_TOKEN }}
 
       - name: Build Docker Image
         run: |
@@ -48,16 +46,27 @@ jobs:
         with:
           image-ref: demo-app:latest
           format: cyclonedx
-          output: sbom.xlxs
+          output: sbom.cdx.json
           exit-code: 0
 
-      - name: Upload SBOM
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Dependencies
+        run: |
+          pip install pandas openpyxl
+
+      - name: Convert SBOM to Excel
+        run: |
+          python convert_sbom.py
+
+      - name: Upload SBOM Excel
         uses: actions/upload-artifact@v4
         with:
           name: docker-image-sbom
-          path: |
-            sbom.cdx.json
-            sbom.xlxs
+          path: sbom.xlsx
           if-no-files-found: error
           retention-days: 30
 
