@@ -48,14 +48,14 @@ jobs:
         with:
           image-ref: demo-app:latest
           format: cyclonedx
-          output: sbom.json
+          output: sbom.xlsx
           exit-code: 0
 
       - name: Upload SBOM
         uses: actions/upload-artifact@v4
         with:
           name: docker-image-sbom
-          path: sbom.json
+          path: sbom.xlsx
           if-no-files-found: error
           retention-days: 30
 
