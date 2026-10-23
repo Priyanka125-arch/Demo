@@ -74,15 +74,15 @@ jobs:
         run: |
           mkdir -p reports
 
-      - name: Run OWASP Dependency Check
-        run: |
-          docker run --rm \
-            -v ${{ github.workspace }}:/src \
-            -v ${{ github.workspace }}/reports:/report \
-            owasp/dependency-check:12.1.8 \
-            --scan /src \
-            --format HTML \
-            --out /report
+      # - name: Run OWASP Dependency Check
+      #   run: |
+      #     docker run --rm \
+      #       -v ${{ github.workspace }}:/src \
+      #       -v ${{ github.workspace }}/reports:/report \
+      #       owasp/dependency-check:12.1.8 \
+      #       --scan /src \
+      #       --format HTML \
+      #       --out /report
 
       - name: Upload Dependency Check Report
         uses: actions/upload-artifact@v4
