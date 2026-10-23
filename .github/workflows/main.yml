@@ -70,5 +70,21 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+      - name: Run OWASP Dependency Check
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/src \
+            -v ${{ github.workspace }}/reports:/report \
+            owasp/dependency-check:latest \
+            --scan /src \
+            --format HTML \
+            --out /report
+
+      - name: Upload Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-check-report
+          path: reports/
+
       - name: Finish Pipeline
         run: echo "Pipeline completed successfully"
