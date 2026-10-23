@@ -71,7 +71,8 @@ jobs:
           retention-days: 30
 
       - name: Create Reports Directory
-        run: mkdir -p reports
+        run: |
+          mkdir -p reports
 
       - name: Run OWASP Dependency Check
         run: |
@@ -89,5 +90,19 @@ jobs:
           name: dependency-check-report
           path: reports/
 
+      - name: Notify Teams
+        if: always()
+        run: |
+          cat > payload.json << EOF
+          {
+            "text": "Repository: ${{ github.repository }}\nWorkflow: ${{ github.workflow }}\nStatus: ${{ job.status }}\nBranch: ${{ github.ref_name }}"
+          }
+          EOF
+
+          curl -H "Content-Type: application/json" \
+            -d @payload.json \
+            "${{ secrets.Testing }}"
+
       - name: Finish Pipeline
-        run: echo "Pipeline completed successfully"
+        run: |
+          echo "Pipeline completed successfully"
