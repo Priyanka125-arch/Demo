@@ -78,7 +78,7 @@ jobs:
           docker run --rm \
             -v ${{ github.workspace }}:/src \
             -v ${{ github.workspace }}/reports:/report \
-            owasp/dependency-check:latest \
+            owasp/dependency-check:12.1.8 \
             --scan /src \
             --format HTML \
             --out /report
