@@ -95,7 +95,7 @@ jobs:
         run: |
           cat > payload.json << EOF
           {
-            "text": "Repository: ${{ github.repository }}\nWorkflow: ${{ github.workflow }}\nStatus: ${{ job.status }}\nBranch: ${{ github.ref_name }}"
+            "text": "GitHub Actions Notification\n\nRepository: ${{ github.repository }}\nWorkflow: ${{ github.workflow }}\nBranch: ${{ github.ref_name }}\nStatus: ${{ job.status }}\nRun Number: ${{ github.run_number }}\nRun URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           }
           EOF
 
