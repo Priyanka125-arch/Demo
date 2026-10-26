@@ -74,16 +74,6 @@ jobs:
         run: |
           mkdir -p reports
 
-      # - name: Run OWASP Dependency Check
-      #   run: |
-      #     docker run --rm \
-      #       -v ${{ github.workspace }}:/src \
-      #       -v ${{ github.workspace }}/reports:/report \
-      #       owasp/dependency-check:12.1.8 \
-      #       --scan /src \
-      #       --format HTML \
-      #       --out /report
-
       - name: Upload Dependency Check Report
         uses: actions/upload-artifact@v4
         with:
@@ -95,14 +85,22 @@ jobs:
         run: |
           cat > payload.json << EOF
           {
-            "text": "GitHub Actions Notification\n\nRepository: ${{ github.repository }}\nWorkflow: ${{ github.workflow }}\nBranch: ${{ github.ref_name }}\nStatus: ${{ job.status }}\nRun Number: ${{ github.run_number }}\nRun URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            "repository": "${{ github.repository }}",
+            "workflow": "${{ github.workflow }}",
+            "branch": "${{ github.ref_name }}",
+            "status": "${{ job.status }}",
+            "run_number": "${{ github.run_number }}",
+            "run_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           }
           EOF
 
-          echo "Payload:"
+          echo "=== Payload ==="
           cat payload.json
 
+          echo "=== Sending Notification ==="
+
           curl -v \
+            -X POST \
             -H "Content-Type: application/json" \
             -d @payload.json \
             "${{ secrets.Testing }}"
