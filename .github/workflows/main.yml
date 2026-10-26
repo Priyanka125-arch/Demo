@@ -87,7 +87,7 @@ jobs:
       - name: Notify Teams
         if: always()
         env:
-          TEAMS_WEBHOOK_URL: ${{ secrets.Testing }}
+          TEAMS_WEBHOOK_URL: ${{ secrets.TESTING }}
         run: |
           echo "Webhook configured: ${TEAMS_WEBHOOK_URL:+YES}"
 
