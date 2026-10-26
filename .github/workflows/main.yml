@@ -99,7 +99,11 @@ jobs:
           }
           EOF
 
-          curl -H "Content-Type: application/json" \
+          echo "Payload:"
+          cat payload.json
+
+          curl -v \
+            -H "Content-Type: application/json" \
             -d @payload.json \
             "${{ secrets.Testing }}"
 
