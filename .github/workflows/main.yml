@@ -27,6 +27,8 @@ jobs:
 
       - name: Run Trivy Vulnerability Scan
         uses: aquasecurity/trivy-action@v0.36.0
+        env:
+          TRIVY_DB_REPOSITORY: ghcr.io/aquasecurity/trivy-db
         with:
           image-ref: demo-app:latest
           scan-type: image
@@ -43,6 +45,8 @@ jobs:
 
       - name: Generate SBOM
         uses: aquasecurity/trivy-action@v0.36.0
+        env:
+          TRIVY_DB_REPOSITORY: ghcr.io/aquasecurity/trivy-db
         with:
           image-ref: demo-app:latest
           format: cyclonedx
@@ -96,8 +100,6 @@ jobs:
 
           echo "=== Payload ==="
           cat payload.json
-
-          echo "=== Sending Notification ==="
 
           curl -v \
             -X POST \
