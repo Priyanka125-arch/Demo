@@ -88,25 +88,17 @@ jobs:
         if: always()
         env:
           TEAMS_WEBHOOK_URL: ${{ secrets.Testing }}
-          REPOSITORY: ${{ github.repository }}
-          WORKFLOW: ${{ github.workflow }}
-          BRANCH: ${{ github.ref_name }}
-          RUN_NUMBER: ${{ github.run_number }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          JOB_STATUS: ${{ job.status }}
         run: |
-          if [ "$JOB_STATUS" = "success" ]; then
-            STATUS="SUCCESS"
-          else
-            STATUS="FAILED"
-          fi
+          echo "Webhook configured: ${TEAMS_WEBHOOK_URL:+YES}"
 
-          MESSAGE="GitHub Actions Pipeline: $STATUS
+          RESPONSE=$(curl -i \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -d '{"text":"GitHub Test Notification"}' \
+            "$TEAMS_WEBHOOK_URL")
 
-          Repository: $REPOSITORY
-          Workflow: $WORKFLOW
-          Branch: $BRANCH
-          Run Number: $RUN_NUMBER
-          Details: $RUN_URL"
+          echo "$RESPONSE"
 
-          PAYLOAD=$
+      - name: Finish Pipeline
+        run: |
+          echo "Pipeline completed successfully"
