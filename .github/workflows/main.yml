@@ -89,15 +89,17 @@ jobs:
         env:
           TEAMS_WEBHOOK_URL: ${{ secrets.TESTING }}
         run: |
-          echo "Webhook configured: ${TEAMS_WEBHOOK_URL:+YES}"
-
-          RESPONSE=$(curl -i \
-            -X POST \
+          curl -X POST \
             -H "Content-Type: application/json" \
-            -d '{"text":"GitHub Test Notification"}' \
-            "$TEAMS_WEBHOOK_URL")
-
-          echo "$RESPONSE"
+            -d "{
+              \"repository\":\"${{ github.repository }}\",
+              \"workflow\":\"${{ github.workflow }}\",
+              \"branch\":\"${{ github.ref_name }}\",
+              \"status\":\"${{ job.status }}\",
+              \"run_number\":\"${{ github.run_number }}\",
+              \"run_url\":\"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
+            }" \
+            "$TEAMS_WEBHOOK_URL"
 
       - name: Finish Pipeline
         run: |
