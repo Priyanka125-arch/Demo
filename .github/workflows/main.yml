@@ -89,16 +89,54 @@ jobs:
         env:
           TEAMS_WEBHOOK_URL: ${{ secrets.TESTING }}
         run: |
-          curl -X POST \
+          cat > payload.json << 'EOF'
+          {
+            "type": "AdaptiveCard",
+            "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+            "version": "1.4",
+            "body": [
+              {
+                "type": "TextBlock",
+                "size": "Large",
+                "weight": "Bolder",
+                "text": "GitHub Actions Notification"
+              },
+              {
+                "type": "TextBlock",
+                "text": "Repository: ${{ github.repository }}"
+              },
+              {
+                "type": "TextBlock",
+                "text": "Workflow: ${{ github.workflow }}"
+              },
+              {
+                "type": "TextBlock",
+                "text": "Branch: ${{ github.ref_name }}"
+              },
+              {
+                "type": "TextBlock",
+                "text": "Status: ${{ job.status }}"
+              },
+              {
+                "type": "TextBlock",
+                "text": "Run Number: ${{ github.run_number }}"
+              },
+              {
+                "type": "TextBlock",
+                "wrap": true,
+                "text": "Run URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              }
+            ]
+          }
+          EOF
+
+          echo "=== Payload ==="
+          cat payload.json
+
+          curl -i -v \
+            -X POST \
             -H "Content-Type: application/json" \
-            -d "{
-              \"repository\":\"${{ github.repository }}\",
-              \"workflow\":\"${{ github.workflow }}\",
-              \"branch\":\"${{ github.ref_name }}\",
-              \"status\":\"${{ job.status }}\",
-              \"run_number\":\"${{ github.run_number }}\",
-              \"run_url\":\"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
-            }" \
+            -d @payload.json \
             "$TEAMS_WEBHOOK_URL"
 
       - name: Finish Pipeline
